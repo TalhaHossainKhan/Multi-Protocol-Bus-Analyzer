@@ -1,0 +1,155 @@
+================================================================================
+  DAQ PLATFORM — SLACK & MICROSOFT TEAMS ALARM NOTIFICATIONS
+  Setup Guide
+================================================================================
+
+OVERVIEW
+--------
+When an alarm fires during a live recording session, the DAQ Platform can send
+an instant notification to a Slack or Microsoft Teams channel of your choice.
+
+There is NO login, NO account linking, and NO third-party SDK required.
+It works through a standard "Incoming Webhook" URL — a one-time setup that
+takes about 2 minutes per channel.  Once pasted into Settings, it works
+automatically forever.
+
+The software uses only Python's built-in urllib library.  No data leaves your
+machine except for the alarm notification itself (alarm name, channel name,
+triggered value, device name).  Raw sensor data is NEVER sent.
+
+
+================================================================================
+  SLACK SETUP
+================================================================================
+
+Step 1 — Create an Incoming Webhook for your workspace
+-------------------------------------------------------
+1. Go to:  https://api.slack.com/apps
+2. Click "Create New App" → choose "From scratch"
+3. Give it a name (e.g. "DAQ Alarms") and pick your workspace → Create App
+4. In the left sidebar click "Incoming Webhooks"
+5. Toggle "Activate Incoming Webhooks" to ON
+6. Scroll down and click "Add New Webhook to Workspace"
+7. Pick the channel you want notifications to go to (e.g. #daq-alerts)
+8. Click "Allow"
+9. Copy the Webhook URL — it looks like:
+      https://hooks.slack.com/services/<TEAM_ID>/<WEBHOOK_ID>/<SECRET_TOKEN>
+   (three slash-separated IDs after /services/ — keep it private, it grants
+    posting rights to your channel)
+
+Step 2 — Paste into the DAQ Platform
+--------------------------------------
+1. Open the DAQ Platform and connect your device
+2. Go to Settings tab → Alarms section
+3. Scroll to the "Notifications" subsection at the bottom
+4. Paste the webhook URL into the "Webhook URL" field
+5. Click "Send Test Message" — check your Slack channel for a green tick message
+6. Done.  Every alarm that fires will now post to that channel.
+
+What a notification looks like in Slack:
+-----------------------------------------
+  🚨  Alarm fired: OverheatWarning
+  Channel `temperature` = *87.3*  ·  device: *ESP32_MotorTest*
+
+
+================================================================================
+  MICROSOFT TEAMS SETUP
+================================================================================
+
+Step 1 — Add an Incoming Webhook connector to a Teams channel
+--------------------------------------------------------------
+1. Open Microsoft Teams and go to the channel you want (e.g. "DAQ Alerts")
+2. Click the three-dot menu (···) next to the channel name → "Connectors"
+   (If you don't see Connectors: click "Manage channel" → "Connectors")
+3. Search for "Incoming Webhook" → click "Add" → "Add" again
+4. Give it a name (e.g. "DAQ Platform") and optionally upload an icon
+5. Click "Create"
+6. Copy the Webhook URL — it looks like:
+      https://yourorg.webhook.office.com/webhookb2/XXXXXXXX@XXXXXXXX/
+      IncomingWebhook/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/XXXXXXXX-XXXX-...
+
+Step 2 — Paste into the DAQ Platform
+--------------------------------------
+1. Open the DAQ Platform and connect your device
+2. Go to Settings tab → Alarms section
+3. Scroll to the "Notifications" subsection at the bottom
+4. Paste the webhook URL into the "Webhook URL" field
+5. Click "Send Test Message" — check your Teams channel for a confirmation message
+6. Done.
+
+NOTE: Teams renders the plain "text" field from the payload.  The alarm name,
+channel name, value, and device name will all appear in the message.
+Block-kit formatting (Slack-specific) is silently ignored by Teams.
+
+
+================================================================================
+  USING BOTH SLACK AND TEAMS
+================================================================================
+
+The DAQ Platform currently supports one webhook URL per session.  If you need
+to notify both Slack and Teams simultaneously:
+
+Option A — Slack workflow automation:
+  Set up a Slack workflow that mirrors messages from #daq-alerts to a Teams
+  channel via the Teams connector.
+
+Option B — Teams Power Automate:
+  Create a Power Automate flow triggered by the Teams incoming webhook that
+  also posts to a Slack channel.
+
+Option C — Use a webhook relay service (e.g. Zapier, Make):
+  Point the DAQ Platform at your Zapier/Make webhook URL; configure it to
+  fan out to both Slack and Teams.  Zapier offers a free tier that is
+  sufficient for alarm volumes typical in bench testing.
+
+
+================================================================================
+  TROUBLESHOOTING
+================================================================================
+
+No message received after "Send Test Message":
+  • Check the URL is pasted correctly (no trailing space, full URL).
+  • Make sure the Slack app is still installed in your workspace
+    (api.slack.com/apps → verify the app exists and is active).
+  • For Teams: verify the connector is still active on the channel
+    (channel → Connectors → Configured → check Incoming Webhook is listed).
+  • Firewall: outbound HTTPS (port 443) to hooks.slack.com or
+    *.webhook.office.com must be allowed on your network.
+
+Message arrives but looks garbled:
+  • Teams: only the "text" field is rendered — this is expected.
+  • Slack: make sure you chose "Incoming Webhooks" and not "Event Subscriptions".
+
+Alarm fires during recording but no message arrives:
+  • Confirm the Webhook URL field is still populated (Settings → Alarms).
+    The URL is saved across sessions via system preferences, but verify.
+  • The software silently swallows network errors to avoid interrupting your
+    test.  If the network goes down mid-test, notifications are dropped
+    (the recording itself is unaffected).
+
+URL expired or rotated:
+  • Slack and Teams webhook URLs do not expire unless manually revoked or
+    the app is uninstalled.  If you rotate it, just paste the new URL.
+
+
+================================================================================
+  PRIVACY & PROPRIETARY DATA
+================================================================================
+
+Only the following information is sent in a webhook notification:
+  - Alarm name (defined by you in the Settings panel)
+  - Channel name (defined by your firmware)
+  - The value that triggered the alarm (a single float)
+  - Device name (the label you see in the top bar)
+  - A timestamp
+
+Raw sensor waveforms, CSV data, session configs, and any other session content
+are NEVER sent.  The webhook call is a one-way fire-and-forget POST of ~200
+bytes of JSON per alarm event.
+
+If your company policy prohibits any data leaving the network, you can:
+  a) Leave the Webhook URL field blank (alarms still log locally, no POST made).
+  b) Use an internal webhook relay on your own infrastructure that accepts the
+     same JSON format and routes to an internal alerting system.
+
+================================================================================

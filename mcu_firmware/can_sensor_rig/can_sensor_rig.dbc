@@ -1,0 +1,16 @@
+VERSION ""
+
+NS_ :
+
+BS_:
+
+BU_: STM32
+
+BO_ 291 DAQ_SENSORS: 8 STM32
+ SG_ distance_mm   : 0|16@1+  (1,0)   [0|8000]   "mm"   Vector__XXX
+ SG_ temperature_c : 16|8@1-  (1,0)   [-40|125]  "degC" Vector__XXX
+ SG_ humidity_pct  : 24|8@1+  (1,0)   [0|100]    "%"    Vector__XXX
+ SG_ light_raw     : 32|16@1+ (1,0)   [0|4095]   ""     Vector__XXX
+ SG_ light_pct     : 48|8@1+  (1,0)   [0|100]    "%"    Vector__XXX
+ SG_ seq           : 56|8@1+  (1,0)   [0|255]    ""     Vector__XXX
+

@@ -1,0 +1,163 @@
+{
+  "version": 5,
+  "saved_at": "2026-05-25T02:05:41.682328+00:00",
+  "session_folder": true,
+  "data_files": {
+    "/dev/cu.usbmodem1101": "data_Test_1__dev_cu_usbmodem1101.csv",
+    "ble://07BF2429-CD9F-9240-86B4-6231A0DB66E7": "data_Test_1__ble___07BF2429-CD9F-9240.csv"
+  },
+  "device_uid": "079670b5dff00d6e2adca7a3981aab4c",
+  "device_name": "ESP32-DAQ",
+  "transport": "ble",
+  "plots": [
+    {
+      "id": "plot_1",
+      "title": "Plot 1",
+      "x_device": null,
+      "x_channel": null,
+      "rolling_window_s": 0.0,
+      "y_axes": [
+        {
+          "label": "Voltage",
+          "min": null,
+          "max": null,
+          "locked": false,
+          "color": "#06b6d4",
+          "side": "left"
+        },
+        {
+          "label": "Current",
+          "min": null,
+          "max": null,
+          "locked": false,
+          "color": "#f59e0b",
+          "side": "right"
+        },
+        {
+          "label": "Temp",
+          "min": null,
+          "max": null,
+          "locked": false,
+          "color": "#10b981",
+          "side": "right"
+        }
+      ],
+      "channels": [
+        {
+          "device": "/dev/cu.usbmodem1101",
+          "channel": "Voltage",
+          "y_axis": 0,
+          "color": "#06b6d4",
+          "line_style": "solid",
+          "line_width": 1.4
+        },
+        {
+          "device": "/dev/cu.usbmodem1101",
+          "channel": "Current",
+          "y_axis": 1,
+          "color": "#f59e0b",
+          "line_style": "solid",
+          "line_width": 1.4
+        },
+        {
+          "device": "/dev/cu.usbmodem1101",
+          "channel": "Temp",
+          "y_axis": 2,
+          "color": "#10b981",
+          "line_style": "solid",
+          "line_width": 1.4
+        }
+      ],
+      "thresholds": [
+        {
+          "id": "d8a98acb",
+          "value": 3.3,
+          "color": "#E05050",
+          "label": "Digital Voltage",
+          "y_axis": 0
+        },
+        {
+          "id": "fda201ee",
+          "value": 25.0,
+          "color": "#E05050",
+          "label": "Room Temperature",
+          "y_axis": 1
+        }
+      ],
+      "overlay_path": null,
+      "alarms": [],
+      "x_markers": [
+        {
+          "id": "d9ad2bfe",
+          "x": 60.0,
+          "color": "#E05050",
+          "label": "1 Minute"
+        }
+      ],
+      "analysis_tags": []
+    },
+    {
+      "id": "plot_2",
+      "title": "Plot 1",
+      "x_device": null,
+      "x_channel": null,
+      "rolling_window_s": 0.0,
+      "y_axes": [
+        {
+          "label": "Distance_cm",
+          "min": null,
+          "max": null,
+          "locked": false,
+          "color": "#06b6d4",
+          "side": "left"
+        }
+      ],
+      "channels": [
+        {
+          "device": "ble://07BF2429-CD9F-9240-86B4-6231A0DB66E7",
+          "channel": "Distance_cm",
+          "y_axis": 0,
+          "color": "#06b6d4",
+          "line_style": "solid",
+          "line_width": 1.4
+        }
+      ],
+      "thresholds": [
+        {
+          "id": "6b6c412e",
+          "value": 50.0,
+          "color": "#E05050",
+          "label": "0.5 Meter",
+          "y_axis": 0
+        }
+      ],
+      "overlay_path": null,
+      "alarms": [
+        {
+          "id": "a7f4c9f2",
+          "name": "Low Distance",
+          "channel": "Distance_cm",
+          "operator": "<",
+          "threshold": 10.0,
+          "color": "#E05050",
+          "enabled": true
+        }
+      ],
+      "x_markers": [],
+      "analysis_tags": [
+        {
+          "id": "1ebfafbd",
+          "start": 60.0,
+          "end": 120.0,
+          "name": "1-2 Minute",
+          "color": "#E0A030"
+        }
+      ]
+    }
+  ],
+  "analysis": {
+    "saved_formulas": [],
+    "oscilloscope": {},
+    "last_dsp_function": "max"
+  }
+}
